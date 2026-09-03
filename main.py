@@ -2,6 +2,7 @@ import os
 from fastapi import FastAPI, Form, Response, HTTPException
 from twilio.twiml.messaging_response import MessagingResponse
 from graph import sentinel_graph
+from intake import load_donor_roster
 from services.notifier import SMSNotifier
 
 app = FastAPI(title="Sentinel Backend - AgentCore Deployment")
@@ -25,7 +26,10 @@ async def handle_sms_webhook(Body: str = Form(...), From: str = Form(...)):
         # Build state including sensitive runtime objects
         invocation_state = {
             "notifier": notifier,
-            "sender": From
+            "sender": From,
+            "fridge_id": os.getenv("FRIDGE_ID", "sentinel-community-fridge"),
+            "donor_roster": load_donor_roster(),
+            "fridge_location": {"lat": 6.5244, "lon": 3.3792},
         }
         
         initial_state = {"incoming_text": Body}

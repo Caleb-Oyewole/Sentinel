@@ -22,7 +22,7 @@ source .venv/Scripts/activate
 Install the application dependencies:
 
 ```bash
-pip install fastapi uvicorn twilio python-multipart
+pip install strands-agents fastapi uvicorn twilio python-multipart
 ```
 
 Set these environment variables before using live Twilio messaging:
@@ -31,7 +31,11 @@ Set these environment variables before using live Twilio messaging:
 TWILIO_ACCOUNT_SID
 TWILIO_AUTH_TOKEN
 TWILIO_NUMBER
+FRIDGE_ID
+SENTINEL_MODEL_ID
 ```
+
+Strands uses its configured model provider credentials. `SENTINEL_MODEL_ID` is optional and selects the model used by the assessment agent.
 
 ## Run
 

@@ -1,6 +1,7 @@
 import math
-from typing import Any, Dict, cast
-from twilio.rest import Client
+from typing import Any, Dict
+
+from services.notifier import SMSNotifier
 
 def haversine(lat1, lon1, lat2, lon2):
     """Calculates distance between two geo points in kilometers."""
@@ -13,11 +14,14 @@ def alert_empty_node(state: Dict[str, Any], invocation_state: Dict[str, Any]) ->
     """Selects nearest donor securely using invocation_state."""
     # Secure parameters extracted from invocation_state
     roster = invocation_state.get("donor_roster", [])
-    twilio_client = cast(Client | None, invocation_state.get("twilio_client"))
+    notifier = invocation_state.get("notifier")
     fridge_location = invocation_state.get("fridge_location", {"lat": 6.5244, "lon": 3.3792})
     
-    if twilio_client is None:
-        raise ValueError("A Twilio client is required to send an empty-fridge alert.")
+    if not isinstance(notifier, SMSNotifier):
+        raise ValueError("An SMS notifier is required to send an empty-fridge alert.")
+    if not roster:
+        state["action_taken"] = "No donor is available for an empty-fridge alert."
+        return state
 
     # Find nearest donor
     nearest_donor = min(
@@ -25,13 +29,12 @@ def alert_empty_node(state: Dict[str, Any], invocation_state: Dict[str, Any]) ->
         key=lambda d: haversine(fridge_location["lat"], fridge_location["lon"], d["lat"], d["lon"])
     )
     
-    # Send SMS via Twilio Client
-    message = twilio_client.messages.create(
-        body=f"Hi {nearest_donor['name']}, the community fridge is empty! Could you help restock?",
-        from_=invocation_state.get("twilio_number"),
-        to=nearest_donor["phone"]
+    result = notifier.send_sms_safe(
+        to_number=nearest_donor["phone"],
+        message_body=f"Hi {nearest_donor['name']}, the community fridge is empty! Could you help restock?",
     )
-    
+
     state["notified_donor"] = nearest_donor["name"]
-    state["sms_sid"] = message.sid
+    state["sms_sid"] = result.get("sid")
+    state["action_taken"] = "SMS sent to nearest donor." if result["status"] == "success" else "Donor SMS failed to send."
     return state
