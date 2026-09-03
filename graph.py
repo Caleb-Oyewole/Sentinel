@@ -1,5 +1,19 @@
-from typing import Dict, Any
-from strands_agents import Graph, Node  # <-- Make sure there is an underscore and valid syntax here
+from typing import Any, Dict
+
+
+class SentinelGraph:
+    """Small state-machine runner for the Sentinel workflow."""
+
+    def run(self, state: Dict[str, Any], invocation_state: Dict[str, Any] | None = None) -> Dict[str, Any]:
+        intake_node(state)
+        assess_node(state)
+        next_node = route_next(state)
+        {
+            "alert_pull": alert_pull_node,
+            "alert_empty": alert_empty_node,
+            "log_ok": log_ok_node,
+        }[next_node](state)
+        return state
 
 def intake_node(state: Dict[str, Any]) -> Dict[str, Any]:
     """Extracts raw check-in text/media from incoming state."""
@@ -42,14 +56,4 @@ def route_next(state: Dict[str, Any]) -> str:
         return "alert_empty"
     return "log_ok"
 
-# Graph Construction
-sentinel_graph = Graph()
-sentinel_graph.add_node("intake", intake_node)
-sentinel_graph.add_node("assess", assess_node)
-sentinel_graph.add_node("alert_pull", alert_pull_node)
-sentinel_graph.add_node("alert_empty", alert_empty_node)
-sentinel_graph.add_node("log_ok", log_ok_node)
-
-sentinel_graph.set_entry_point("intake")
-sentinel_graph.add_edge("intake", "assess")
-sentinel_graph.add_conditional_edges("assess", route_next)
+sentinel_graph = SentinelGraph()
