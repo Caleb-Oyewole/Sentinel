@@ -1,16 +1,14 @@
 from typing import Dict, Any
-from strands-agents import Graph, Node # Assuming standard Strands Graph structure
+from strands_agents import Graph, Node  # <-- Make sure there is an underscore and valid syntax here
 
 def intake_node(state: Dict[str, Any]) -> Dict[str, Any]:
     """Extracts raw check-in text/media from incoming state."""
     raw_text = state.get("incoming_text", "")
-    # Placeholder extraction logic
     state["extracted_data"] = {"raw_text": raw_text}
     return state
 
 def assess_node(state: Dict[str, Any]) -> Dict[str, Any]:
     """Classifies fridge state into: risk, critically_empty, or all_fine."""
-    # Day 1 placeholder decision logic
     text = state.get("incoming_text", "").lower()
     if "spoil" in text or "bad" in text:
         state["status"] = "risk"
