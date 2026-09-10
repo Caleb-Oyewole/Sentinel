@@ -1,18 +1,36 @@
 import os
+from pathlib import Path
+
+from dotenv import load_dotenv
 from fastapi import FastAPI, Form, Response, HTTPException
 from twilio.twiml.messaging_response import MessagingResponse
+
 from graph import sentinel_graph
 from intake import load_donor_roster
 from services.notifier import SMSNotifier
 
+load_dotenv(dotenv_path=Path(__file__).resolve().with_name(".env"), override=False)
+
 app = FastAPI(title="Sentinel Backend - AgentCore Deployment")
 
 # Retrieve production environment credentials
-TWILIO_SID = os.getenv("TWILIO_ACCOUNT_SID", "mock_sid")
-TWILIO_TOKEN = os.getenv("TWILIO_AUTH_TOKEN", "mock_token")
-TWILIO_NUMBER = os.getenv("TWILIO_NUMBER", "+1234567890")
+TWILIO_SID = os.getenv("TWILIO_ACCOUNT_SID", "")
+TWILIO_TOKEN = os.getenv("TWILIO_AUTH_TOKEN", "")
+TWILIO_NUMBER = os.getenv("TWILIO_NUMBER", "")
 
 notifier = SMSNotifier(TWILIO_SID, TWILIO_TOKEN, TWILIO_NUMBER)
+
+@app.get("/")
+async def root():
+    """Simple landing page for the Sentinel API."""
+    return {
+        "message": "Sentinel is running.",
+        "status": "ok",
+        "endpoints": [
+            "/health",
+            "/webhook/sms",
+        ],
+    }
 
 @app.get("/health")
 async def health_check():
