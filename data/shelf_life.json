@@ -1,0 +1,190 @@
+{
+  "leafy_greens": {
+    "condition": "raw",
+    "fridge_shelf_life_days": 5,
+    "spoilage_signals": [
+      "wilting",
+      "sliminess",
+      "discoloration",
+      "odor"
+    ]
+  },
+  "berries": {
+    "condition": "raw",
+    "fridge_shelf_life_days": 4,
+    "spoilage_signals": [
+      "mold",
+      "mushiness",
+      "leaking juice"
+    ]
+  },
+  "root_vegetables": {
+    "condition": "raw",
+    "fridge_shelf_life_days": 21,
+    "spoilage_signals": [
+      "soft spots",
+      "sprouting",
+      "mold"
+    ]
+  },
+  "tomatoes": {
+    "condition": "raw",
+    "fridge_shelf_life_days": 7,
+    "spoilage_signals": [
+      "wrinkling",
+      "mold",
+      "leaking"
+    ]
+  },
+  "bananas": {
+    "condition": "raw",
+    "fridge_shelf_life_days": 5,
+    "spoilage_signals": [
+      "black skin",
+      "mushiness",
+      "fermented smell"
+    ]
+  },
+  "citrus": {
+    "condition": "raw",
+    "fridge_shelf_life_days": 14,
+    "spoilage_signals": [
+      "mold",
+      "soft spots",
+      "dryness"
+    ]
+  },
+  "apples": {
+    "condition": "raw",
+    "fridge_shelf_life_days": 28,
+    "spoilage_signals": [
+      "soft spots",
+      "wrinkled skin",
+      "mealy texture",
+      "mold"
+    ]
+  },
+  "raw_poultry": {
+    "condition": "raw",
+    "fridge_shelf_life_days": 2,
+    "spoilage_signals": [
+      "off odor",
+      "sliminess",
+      "gray tint"
+    ]
+  },
+  "raw_red_meat": {
+    "condition": "raw",
+    "fridge_shelf_life_days": 3,
+    "spoilage_signals": [
+      "off odor",
+      "sliminess",
+      "discoloration"
+    ]
+  },
+  "cooked_meat_dish": {
+    "condition": "cooked",
+    "fridge_shelf_life_days": 4,
+    "spoilage_signals": [
+      "off odor",
+      "mold",
+      "dryness"
+    ]
+  },
+  "milk": {
+    "condition": "dairy",
+    "fridge_shelf_life_days": 7,
+    "spoilage_signals": [
+      "sour smell",
+      "curdling"
+    ]
+  },
+  "yogurt": {
+    "condition": "dairy",
+    "fridge_shelf_life_days": 14,
+    "spoilage_signals": [
+      "mold",
+      "off odor",
+      "separation beyond normal"
+    ]
+  },
+  "hard_cheese": {
+    "condition": "dairy",
+    "fridge_shelf_life_days": 30,
+    "spoilage_signals": [
+      "mold (beyond rind)",
+      "off odor"
+    ]
+  },
+  "eggs": {
+    "condition": "dairy",
+    "fridge_shelf_life_days": 21,
+    "spoilage_signals": [
+      "off odor when cracked",
+      "float test fail"
+    ]
+  },
+  "cooked_grains_dish": {
+    "condition": "cooked",
+    "fridge_shelf_life_days": 4,
+    "spoilage_signals": [
+      "off odor",
+      "mold",
+      "sliminess"
+    ]
+  },
+  "dry_staples": {
+    "condition": "packaged",
+    "fridge_shelf_life_days": 365,
+    "spoilage_signals": [
+      "pest infestation",
+      "off smell",
+      "moisture/clumping",
+      "mold"
+    ]
+  },
+  "bread": {
+    "condition": "packaged",
+    "fridge_shelf_life_days": 7,
+    "spoilage_signals": [
+      "mold",
+      "hardness"
+    ]
+  },
+  "canned_goods": {
+    "condition": "packaged",
+    "fridge_shelf_life_days": 365,
+    "spoilage_signals": [
+      "bulging can",
+      "rust",
+      "leaking"
+    ]
+  },
+  "packaged_snacks": {
+    "condition": "packaged",
+    "fridge_shelf_life_days": 60,
+    "spoilage_signals": [
+      "stale smell",
+      "rancid odor",
+      "torn packaging"
+    ]
+  },
+  "leftovers_general": {
+    "condition": "cooked",
+    "fridge_shelf_life_days": 3,
+    "spoilage_signals": [
+      "off odor",
+      "mold",
+      "sliminess"
+    ]
+  },
+  "unidentified": {
+    "condition": "unknown",
+    "fridge_shelf_life_days": 3,
+    "spoilage_signals": [
+      "off odor",
+      "visible mold",
+      "unusual texture"
+    ]
+  }
+}
