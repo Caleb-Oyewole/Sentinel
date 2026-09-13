@@ -1,6 +1,12 @@
 import os
+from pathlib import Path
+
+from dotenv import load_dotenv
 from fastapi import FastAPI, Form, Response, HTTPException
 from twilio.twiml.messaging_response import MessagingResponse
+
+load_dotenv(Path(__file__).resolve().parent / ".env")
+
 from graph import sentinel_graph
 from intake import load_donor_roster
 from services.notifier import SMSNotifier

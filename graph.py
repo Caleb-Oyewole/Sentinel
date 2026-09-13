@@ -1,9 +1,14 @@
 import json
 import os
+from pathlib import Path
 from typing import Any, Dict
 
+from dotenv import load_dotenv
 from pydantic import BaseModel, Field
+from services.model_provider import get_model
 from strands import Agent
+
+load_dotenv(Path(__file__).resolve().parent / ".env")
 
 from branch_nodes import alert_empty_node
 from intake import intake_node
@@ -14,9 +19,8 @@ class Assessment(BaseModel):
     status: str = Field(description="One of risk, critically_empty, or all_fine")
     reasoning: str = Field(description="Brief explanation of the evidence and tool result used")
 
-
 assessment_agent = Agent(
-    model=os.getenv("SENTINEL_MODEL_ID") or None,
+    model=get_model(),
     tools=[lookup_shelf_life],
     structured_output_model=Assessment,
     system_prompt=(
@@ -46,6 +50,13 @@ class SentinelGraph:
 
 def assess_node(state: Dict[str, Any], invocation_state: Dict[str, Any]) -> Dict[str, Any]:
     """Uses Strands reasoning and a shelf-life tool to classify the check-in."""
+    extracted = state["extracted_data"]
+    fill_pct = extracted.get("fill_level_pct")
+    empty_threshold = 20  
+    if fill_pct is not None and fill_pct < empty_threshold:
+        state["status"] = "critically_empty"
+        state["assessment_reasoning"] = f"fill_level_pct={fill_pct} below empty_threshold={empty_threshold}"
+        return state
     result = assessment_agent(
         json.dumps(state["extracted_data"]),
         invocation_state=invocation_state,
