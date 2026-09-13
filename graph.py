@@ -31,6 +31,29 @@ assessment_agent = Agent(
 )
 
 
+
+def fallback_assessment(state: Dict[str, Any]) -> Dict[str, Any]:
+    """Deterministic local assessment used when no model credentials exist."""
+    extracted = state.get("extracted_data", {})
+    raw_text = str(extracted.get("raw_text", "")).lower()
+    fill_level = str(extracted.get("fill_level", "")).lower()
+    freshness_signal = str(extracted.get("freshness_signal", "")).lower()
+
+    if any(word in raw_text for word in ("empty", "out of food", "needs restocking", "barely any")) or fill_level in {"low", "empty"}:
+        state["status"] = "critically_empty"
+        state["assessment_reasoning"] = "The check-in indicates the fridge is empty or nearly empty, so it should be flagged for donor restocking."
+        return state
+
+    if any(word in raw_text for word in ("spoiled", "expired", "bad", "smells", "unsafe")) or freshness_signal == "near_expiry":
+        state["status"] = "risk"
+        state["assessment_reasoning"] = "The check-in suggests a spoiled or expired item, so the affected food should be reviewed and removed if necessary."
+        return state
+
+    state["status"] = "all_fine"
+    state["assessment_reasoning"] = "The check-in suggests the fridge is adequately stocked and food appears safe for the community."
+    return state
+
+
 class SentinelGraph:
     """Five-node Sentinel workflow with Strands-backed assessment."""
 
@@ -50,25 +73,33 @@ class SentinelGraph:
 
 def assess_node(state: Dict[str, Any], invocation_state: Dict[str, Any]) -> Dict[str, Any]:
     """Uses Strands reasoning and a shelf-life tool to classify the check-in."""
-    extracted = state["extracted_data"]
-    fill_pct = extracted.get("fill_level_pct")
-    empty_threshold = 20  
-    if fill_pct is not None and fill_pct < empty_threshold:
+extracted = state["extracted_data"]
+fill_pct = extracted.get("fill_level_pct")
+empty_threshold = 20
+if fill_pct is not None and fill_pct < empty_threshold:
         state["status"] = "critically_empty"
         state["assessment_reasoning"] = f"fill_level_pct={fill_pct} below empty_threshold={empty_threshold}"
         return state
-    result = assessment_agent(
-        json.dumps(state["extracted_data"]),
-        invocation_state=invocation_state,
-    )
-    assessment = result.structured_output
-    if not isinstance(assessment, Assessment):
-        raise ValueError("The assessment agent did not return structured output.")
-    if assessment.status not in {"risk", "critically_empty", "all_fine"}:
-        raise ValueError(f"Unsupported assessment status: {assessment.status}")
-    state["status"] = assessment.status
-    state["assessment_reasoning"] = assessment.reasoning
-    return state
+
+if assessment_agent is None:
+        return fallback_assessment(state)
+
+try:
+        result = assessment_agent(
+            json.dumps(state["extracted_data"]),
+            invocation_state=invocation_state,
+        )
+        assessment = result.structured_output
+        if not isinstance(assessment, Assessment):
+            raise ValueError("The assessment agent did not return structured output.")
+        if assessment.status not in {"risk", "critically_empty", "all_fine"}:
+            raise ValueError(f"Unsupported assessment status: {assessment.status}")
+        state["status"] = assessment.status
+        state["assessment_reasoning"] = assessment.reasoning
+        return state
+except Exception:
+        return fallback_assessment(state)
+
 
 
 def alert_pull_node(state: Dict[str, Any], invocation_state: Dict[str, Any]) -> Dict[str, Any]:

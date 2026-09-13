@@ -31,17 +31,19 @@ Install the application dependencies:
 pip install strands-agents fastapi uvicorn twilio python-multipart
 ```
 
-Set these environment variables before using live Twilio messaging:
+Create a local `.env` file in the project root and fill in the real values before using live messaging:
 
-```text
-TWILIO_ACCOUNT_SID
-TWILIO_AUTH_TOKEN
-TWILIO_NUMBER
-FRIDGE_ID
-SENTINEL_MODEL_ID
+```env
+TWILIO_ACCOUNT_SID=your_twilio_account_sid
+TWILIO_AUTH_TOKEN=your_twilio_auth_token
+TWILIO_NUMBER=+15551234567
+FRIDGE_ID=sentinel-community-fridge
+SENTINEL_MODEL_ID=your_model_id
 ```
 
-Strands uses configured model-provider credentials. `SENTINEL_MODEL_ID` is optional and selects the model used by the assessment agent.
+A template is provided in `.env.example`. The app loads `.env` automatically via `python-dotenv`.
+
+Strands uses configured model-provider credentials. `SENTINEL_MODEL_ID` is optional for the local fallback mode but required for the live AI assessment path.
 
 ## Run
 
