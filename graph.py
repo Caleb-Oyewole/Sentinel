@@ -73,18 +73,18 @@ class SentinelGraph:
 
 def assess_node(state: Dict[str, Any], invocation_state: Dict[str, Any]) -> Dict[str, Any]:
     """Uses Strands reasoning and a shelf-life tool to classify the check-in."""
-extracted = state["extracted_data"]
-fill_pct = extracted.get("fill_level_pct")
-empty_threshold = 20
-if fill_pct is not None and fill_pct < empty_threshold:
+    extracted = state["extracted_data"]
+    fill_pct = extracted.get("fill_level_pct")
+    empty_threshold = 20
+    if fill_pct is not None and fill_pct < empty_threshold:
         state["status"] = "critically_empty"
         state["assessment_reasoning"] = f"fill_level_pct={fill_pct} below empty_threshold={empty_threshold}"
         return state
 
-if assessment_agent is None:
+    if assessment_agent is None:
         return fallback_assessment(state)
 
-try:
+    try:
         result = assessment_agent(
             json.dumps(state["extracted_data"]),
             invocation_state=invocation_state,
@@ -97,7 +97,8 @@ try:
         state["status"] = assessment.status
         state["assessment_reasoning"] = assessment.reasoning
         return state
-except Exception:
+    except Exception as e:
+        print(f"REAL ERROR: {type(e).name}: {e}")
         return fallback_assessment(state)
 
 
