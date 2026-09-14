@@ -98,7 +98,7 @@ def assess_node(state: Dict[str, Any], invocation_state: Dict[str, Any]) -> Dict
         state["assessment_reasoning"] = assessment.reasoning
         return state
     except Exception as e:
-        print(f"REAL ERROR: {type(e).name}: {e}")
+        print(f"REAL ERROR: {type(e).__name__}: {e}")
         return fallback_assessment(state)
 
 
