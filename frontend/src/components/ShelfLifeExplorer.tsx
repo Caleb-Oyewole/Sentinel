@@ -62,16 +62,17 @@ export const ShelfLifeExplorer: React.FC<ShelfLifeExplorerProps> = ({ shelfLife 
         {filteredKeys.map((key) => {
           const info = items[key] || {};
           const matchedAliases = Object.entries(aliases)
-            .filter(([_, target]) => target === key)
+            .filter(([, target]) => target === key)
             .map(([alias]) => alias);
 
           return (
             <div
               key={key}
               style={{
-                background: 'rgba(255, 255, 255, 0.03)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: '12px',
+                background: '#0d1322',
+                border: '2px solid #000',
+                boxShadow: '3px 3px 0px #000',
+                borderRadius: '10px',
                 padding: '14px',
                 display: 'flex',
                 flexDirection: 'column',
@@ -112,7 +113,7 @@ export const ShelfLifeExplorer: React.FC<ShelfLifeExplorerProps> = ({ shelfLife 
               {/* Tips / Notes */}
               {info.tips && (
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', lineHeight: 1.4 }}>
-                  💡 {info.tips}
+                  Tip: {info.tips}
                 </div>
               )}
 

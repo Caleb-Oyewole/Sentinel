@@ -515,3 +515,290 @@ body {
 .marker-highlight {
   animation: marker-bounce 1s ease-in-out infinite;
 }
+
+/* ==========================================================================
+   NEOBRUTALIST DESIGN SYSTEM & LANDING PAGE STYLES
+   ========================================================================== */
+
+:root {
+  --neo-black: #05070b;
+  --neo-border: #000000;
+  --neo-border-dark: #000000;
+  --neo-shadow: 4px 4px 0px #000000;
+  --neo-shadow-lg: 6px 6px 0px #000000;
+  --neo-shadow-xl: 9px 9px 0px #000000;
+  --neo-shadow-sm: 2px 2px 0px #000000;
+  
+  --neo-yellow: #ffe600;
+  --neo-yellow-hover: #ffec33;
+  --neo-green: #00f59b;
+  --neo-green-hover: #26f7a7;
+  --neo-cyan: #00e5ff;
+  --neo-cyan-hover: #33eaff;
+  --neo-coral: #ff4365;
+  --neo-coral-hover: #ff6683;
+  --neo-purple: #a855f7;
+  --neo-purple-hover: #b875f8;
+  --neo-orange: #ff9900;
+  --neo-white: #ffffff;
+  --neo-dark-card: #0f1523;
+  --neo-dark-surface: #141b2d;
+}
+
+/* Neobrutalist Card */
+.neo-box {
+  background: var(--neo-dark-card);
+  border: 2.5px solid var(--neo-border);
+  border-radius: 14px;
+  box-shadow: var(--neo-shadow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  position: relative;
+}
+
+.neo-box:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--neo-shadow-lg);
+}
+
+.neo-box-static {
+  background: var(--neo-dark-card);
+  border: 2.5px solid var(--neo-border);
+  border-radius: 14px;
+  box-shadow: var(--neo-shadow);
+}
+
+.neo-box-yellow {
+  background: var(--neo-yellow);
+  color: var(--neo-black);
+  border: 2.5px solid var(--neo-border);
+  box-shadow: var(--neo-shadow);
+}
+
+.neo-box-green {
+  background: var(--neo-green);
+  color: var(--neo-black);
+  border: 2.5px solid var(--neo-border);
+  box-shadow: var(--neo-shadow);
+}
+
+.neo-box-cyan {
+  background: var(--neo-cyan);
+  color: var(--neo-black);
+  border: 2.5px solid var(--neo-border);
+  box-shadow: var(--neo-shadow);
+}
+
+.neo-box-coral {
+  background: var(--neo-coral);
+  color: #ffffff;
+  border: 2.5px solid var(--neo-border);
+  box-shadow: var(--neo-shadow);
+}
+
+/* Neobrutalist Buttons */
+.neo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border: 2.5px solid var(--neo-border);
+  box-shadow: var(--neo-shadow);
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  text-decoration: none;
+}
+
+.neo-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--neo-shadow-lg);
+}
+
+.neo-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: var(--neo-shadow-sm);
+}
+
+.neo-btn-primary {
+  background: var(--neo-yellow);
+  color: var(--neo-black);
+}
+
+.neo-btn-primary:hover {
+  background: var(--neo-yellow-hover);
+}
+
+.neo-btn-green {
+  background: var(--neo-green);
+  color: var(--neo-black);
+}
+
+.neo-btn-green:hover {
+  background: var(--neo-green-hover);
+}
+
+.neo-btn-cyan {
+  background: var(--neo-cyan);
+  color: var(--neo-black);
+}
+
+.neo-btn-cyan:hover {
+  background: var(--neo-cyan-hover);
+}
+
+.neo-btn-dark {
+  background: var(--neo-dark-surface);
+  color: var(--neo-white);
+}
+
+.neo-btn-dark:hover {
+  background: #1e263d;
+}
+
+.neo-btn-coral {
+  background: var(--neo-coral);
+  color: #ffffff;
+}
+
+.neo-btn-coral:hover {
+  background: var(--neo-coral-hover);
+}
+
+/* Neobrutalist Pills and Stickers */
+.neo-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 2px solid var(--neo-border);
+  box-shadow: var(--neo-shadow-sm);
+}
+
+.neo-sticker {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  border: 1.5px solid var(--neo-border);
+  box-shadow: 2px 2px 0px #000;
+  transform: rotate(-1.5deg);
+}
+
+/* Ticker / Marquee */
+.marquee-container {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  background: var(--neo-yellow);
+  color: var(--neo-black);
+  border-top: 2.5px solid var(--neo-border);
+  border-bottom: 2.5px solid var(--neo-border);
+  padding: 10px 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 0px #000;
+}
+
+.marquee-content {
+  display: inline-block;
+  animation: marquee-scroll 24s linear infinite;
+}
+
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Landing Section Wrappers */
+.landing-hero {
+  padding: 3.5rem 1rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 2.5rem;
+  align-items: center;
+  max-width: 1380px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+@media (max-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+}
+
+.hero-headline {
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 5vw, 4.2rem);
+  font-weight: 900;
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+  margin: 1.25rem 0 1rem;
+}
+
+.hero-subhead {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  line-height: 1.6;
+  color: #94a3b8;
+  max-width: 620px;
+  margin-bottom: 2rem;
+}
+
+/* Landing Feature Grid */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+/* Pipeline Flow Nodes in Landing */
+.pipeline-flow-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  position: relative;
+}
+
+@media (max-width: 900px) {
+  .pipeline-flow-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Landing Footer */
+.landing-footer {
+  margin-top: 4rem;
+  border-top: 2.5px solid var(--neo-border);
+  background: #080b12;
+  position: relative;
+}

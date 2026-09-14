@@ -1,21 +1,16 @@
 import json
-from pathlib import Path
 import os
+from pathlib import Path
 import sys
 
+# Add project root to sys.path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from dotenv import load_dotenv
+load_dotenv(Path(__file__).resolve().parent.parent / ".env")
+load_dotenv()
+
 from services.model_provider import get_model
-
-load_dotenv(Path(__file__).resolve().parent / ".env")
-
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except ImportError:
-    pass
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-
 import graph as graph_module  # noqa: E402
 
 

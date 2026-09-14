@@ -137,6 +137,8 @@ export async function submitCheckin(text: string, sender?: string): Promise<Chec
   return res.json();
 }
 
+export const processCheckin = submitCheckin;
+
 export async function submitWebhookSms(body: string, from: string): Promise<string> {
   const formData = new URLSearchParams();
   formData.append('Body', body);

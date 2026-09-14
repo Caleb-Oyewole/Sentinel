@@ -48,60 +48,69 @@ export const FridgeStatusHUD: React.FC<FridgeStatusHUDProps> = ({ stats }) => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
       {/* Top Banner: Active Status */}
       <div 
-        className="glass-panel" 
+        className="neo-box-static" 
         style={{ 
           padding: '1.25rem 1.5rem', 
-          borderLeft: `4px solid ${status === 'risk' ? '#f43f5e' : status === 'critically_empty' ? '#f59e0b' : '#10b981'}`,
+          borderLeft: `6px solid ${status === 'risk' ? 'var(--neo-coral)' : status === 'critically_empty' ? 'var(--neo-yellow)' : 'var(--neo-green)'}`,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           flexWrap: 'wrap',
-          gap: '1rem'
+          gap: '1rem',
+          background: '#0d121f',
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{
-            width: '42px',
-            height: '42px',
+            width: '46px',
+            height: '46px',
             borderRadius: '10px',
-            background: status === 'risk' ? 'rgba(244,63,94,0.15)' : status === 'critically_empty' ? 'rgba(245,158,11,0.15)' : 'rgba(16,185,129,0.15)',
+            background: status === 'risk' ? 'var(--neo-coral)' : status === 'critically_empty' ? 'var(--neo-yellow)' : 'var(--neo-green)',
+            border: '2px solid #000',
+            boxShadow: '2px 2px 0px #000',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center'
+            justifyContent: 'center',
+            color: status === 'risk' ? '#fff' : '#000',
           }}>
             {statusConfig.icon}
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, fontSize: '1.125rem' }}>
+              <span style={{ fontFamily: 'var(--font-display)', fontWeight: 800, fontSize: '1.15rem', color: '#fff' }}>
                 {statusConfig.title}
               </span>
-              <span className={`badge ${statusConfig.badgeClass}`}>
-                <span className={`pulse-dot ${statusConfig.dotClass}`} />
-                LIVE
+              <span
+                className="neo-sticker"
+                style={{
+                  background: status === 'risk' ? 'var(--neo-coral)' : status === 'critically_empty' ? 'var(--neo-yellow)' : 'var(--neo-green)',
+                  color: status === 'risk' ? '#fff' : '#000',
+                }}
+              >
+                LIVE STATUS
               </span>
             </div>
-            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '2px' }}>
+            <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
               {statusConfig.desc}
             </p>
           </div>
         </div>
 
         {/* Environmental Telemetry */}
-        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', padding: '6px 14px', background: 'rgba(0,0,0,0.25)', borderRadius: '10px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Thermometer size={16} className="text-cyan-400" />
+        <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', padding: '8px 16px', background: '#07090e', borderRadius: '10px', border: '2px solid #000', boxShadow: '2px 2px 0px #000' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Thermometer size={18} color="var(--neo-cyan)" />
             <div>
               <div style={{ fontSize: '0.6875rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>INTERNAL TEMP</div>
-              <div style={{ fontSize: '0.9375rem', fontWeight: 600, fontFamily: 'var(--font-mono)', color: '#38bdf8' }}>3.8°C</div>
+              <div style={{ fontSize: '0.95rem', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--neo-cyan)' }}>3.8°C</div>
             </div>
           </div>
-          <div style={{ width: '1px', height: '24px', background: 'var(--border-subtle)' }} />
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Droplets size={16} className="text-emerald-400" />
+          <div style={{ width: '2px', height: '24px', background: '#1e293b' }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Droplets size={18} color="var(--neo-green)" />
             <div>
               <div style={{ fontSize: '0.6875rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>HUMIDITY</div>
-              <div style={{ fontSize: '0.9375rem', fontWeight: 600, fontFamily: 'var(--font-mono)', color: '#34d399' }}>44%</div>
+              <div style={{ fontSize: '0.95rem', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--neo-green)' }}>44%</div>
             </div>
           </div>
         </div>
@@ -110,63 +119,71 @@ export const FridgeStatusHUD: React.FC<FridgeStatusHUDProps> = ({ stats }) => {
       {/* Metrics Row */}
       <div className="metrics-row">
         {/* Capacity / Fill Meter */}
-        <div className="glass-panel metric-card">
+        <div className="neo-box metric-card" style={{ background: '#0d1322' }}>
           <div>
             <div className="metric-title">ESTIMATED FILL LEVEL</div>
             <div className="metric-value">
               <span>{fillPct}%</span>
-              <span style={{ fontSize: '0.875rem', fontWeight: 500, color: fillPct < 20 ? '#fb7185' : '#34d399' }}>
+              <span style={{ fontSize: '0.8125rem', fontWeight: 700, color: fillPct < 20 ? 'var(--neo-coral)' : 'var(--neo-green)' }}>
                 {fillPct < 20 ? 'CRITICAL' : fillPct < 50 ? 'MODERATE' : 'OPTIMAL'}
               </span>
             </div>
             <div className="metric-subtext">Threshold: &lt;20% triggers SMS dispatch</div>
             {/* Mini bar */}
-            <div style={{ width: '100%', height: '6px', background: 'rgba(255,255,255,0.08)', borderRadius: '4px', marginTop: '10px', overflow: 'hidden' }}>
+            <div style={{ width: '100%', height: '8px', background: '#080c14', border: '1.5px solid #000', borderRadius: '4px', marginTop: '10px', overflow: 'hidden' }}>
               <div 
                 style={{ 
                   height: '100%', 
                   width: `${Math.min(100, Math.max(5, fillPct))}%`, 
-                  background: fillPct < 20 ? '#f43f5e' : fillPct < 50 ? '#f59e0b' : '#10b981',
+                  background: fillPct < 20 ? 'var(--neo-coral)' : fillPct < 50 ? 'var(--neo-yellow)' : 'var(--neo-green)',
                   transition: 'width 0.6s ease'
                 }} 
               />
             </div>
           </div>
-          <Box size={26} color="#06b6d4" opacity={0.7} />
+          <div style={{ padding: '8px', background: '#07090e', border: '2px solid #000', borderRadius: '8px', boxShadow: '2px 2px 0px #000' }}>
+            <Box size={22} color="var(--neo-cyan)" />
+          </div>
         </div>
 
         {/* Total Check-ins */}
-        <div className="glass-panel metric-card">
+        <div className="neo-box metric-card" style={{ background: '#0d1322' }}>
           <div>
             <div className="metric-title">CHECK-INS PROCESSED</div>
             <div className="metric-value">{stats?.total_checkins ?? 0}</div>
-            <div className="metric-subtext">Community & volunteer SMS logs</div>
+            <div className="metric-subtext">Community &amp; volunteer SMS logs</div>
           </div>
-          <Activity size={26} color="#10b981" opacity={0.7} />
+          <div style={{ padding: '8px', background: '#07090e', border: '2px solid #000', borderRadius: '8px', boxShadow: '2px 2px 0px #000' }}>
+            <Activity size={22} color="var(--neo-green)" />
+          </div>
         </div>
 
         {/* Spoilage Risk Interventions */}
-        <div className="glass-panel metric-card">
+        <div className="neo-box metric-card" style={{ background: '#0d1322' }}>
           <div>
             <div className="metric-title">SPOILAGE INTERVENTIONS</div>
-            <div className="metric-value" style={{ color: stats && stats.risk_count > 0 ? '#fb7185' : 'inherit' }}>
+            <div className="metric-value" style={{ color: stats && stats.risk_count > 0 ? 'var(--neo-coral)' : 'inherit' }}>
               {stats?.risk_count ?? 0}
             </div>
-            <div className="metric-subtext">Expired or bad food pulled</div>
+            <div className="metric-subtext">Expired or unsafe food pulled</div>
           </div>
-          <AlertOctagon size={26} color="#f43f5e" opacity={0.7} />
+          <div style={{ padding: '8px', background: '#07090e', border: '2px solid #000', borderRadius: '8px', boxShadow: '2px 2px 0px #000' }}>
+            <AlertOctagon size={22} color="var(--neo-coral)" />
+          </div>
         </div>
 
         {/* Restock Dispatches */}
-        <div className="glass-panel metric-card">
+        <div className="neo-box metric-card" style={{ background: '#0d1322' }}>
           <div>
             <div className="metric-title">RESTOCK DISPATCHES</div>
-            <div className="metric-value" style={{ color: stats && stats.critically_empty_count > 0 ? '#fbbf24' : 'inherit' }}>
+            <div className="metric-value" style={{ color: stats && stats.critically_empty_count > 0 ? 'var(--neo-yellow)' : 'inherit' }}>
               {stats?.critically_empty_count ?? 0}
             </div>
             <div className="metric-subtext">{stats?.active_donors_count ?? 5} donors in active radius</div>
           </div>
-          <Users size={26} color="#8b5cf6" opacity={0.7} />
+          <div style={{ padding: '8px', background: '#07090e', border: '2px solid #000', borderRadius: '8px', boxShadow: '2px 2px 0px #000' }}>
+            <Users size={22} color="var(--neo-purple)" />
+          </div>
         </div>
       </div>
     </div>

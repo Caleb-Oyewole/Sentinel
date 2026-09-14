@@ -198,7 +198,7 @@ export const SmsSimulator: React.FC<SmsSimulatorProps> = ({ onCheckinComplete })
           {/* Chat Messages */}
           <div style={{ minHeight: '130px', display: 'flex', flexDirection: 'column', gap: '10px', justifyContent: 'flex-end' }}>
             <div className="chat-bubble-received">
-              👋 Welcome to Sentinel Community Fridge. Text your report or item shelf check-in.
+              Welcome to Sentinel Community Fridge. Text your report or item shelf check-in.
             </div>
 
             {lastResponse && (
