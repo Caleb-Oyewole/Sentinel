@@ -6,7 +6,7 @@ Sentinel is an intelligent operations and mutual-aid dispatch platform for commu
 
 ## Features
 
-- **Mission Control Dashboard**: Live glassmorphic operations HUD with animated capacity gauges, internal temperature and humidity sensors, and health indicators.
+- **Mission Control Dashboard**: Live operations HUD with animated capacity gauges, internal temperature and humidity sensors, and health indicators.
 - **SMS & Check-in Simulator**: Interactive mobile phone console allowing volunteers to simulate check-in reports or send real Twilio webhook traffic with instant TwiML feedback.
 - **Strands AI Pipeline Visualizer**: Real-time 5-node agent pipeline flow (`Intake` ➔ `Shelf-Life Tool` ➔ `Assessment Agent` ➔ `Smart Router` ➔ `Resolution`) with structured reasoning explainability.
 - **Geo-Spatial Haversine Radar**: Interactive SVG radar tracking registered donors and autonomously connecting to the closest donor when an empty fridge (<20%) alert is triggered.
@@ -81,7 +81,7 @@ Open **`http://127.0.0.1:8000/`** in your browser. The full Mission Control dash
 ### Option B: Frontend Hot-Reload Development
 Start the FastAPI backend:
 ```powershell
-uvicorn main:app --port 8000
+uvicorn main:app --port 8000 --reload
 ```
 In a second terminal, launch the Vite dev server:
 ```powershell

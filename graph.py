@@ -19,17 +19,22 @@ class Assessment(BaseModel):
     status: str = Field(description="One of risk, critically_empty, or all_fine")
     reasoning: str = Field(description="Brief explanation of the evidence and tool result used")
 
-assessment_agent = Agent(
-    model=get_model(),
-    tools=[lookup_shelf_life],
-    structured_output_model=Assessment,
-    system_prompt=(
-        "You assess community fridge check-ins. Use lookup_shelf_life when an item or freshness "
-        "claim needs verification. Return risk for unsafe or likely spoiled food, critically_empty "
-        "for an empty or nearly empty fridge, and all_fine when food is safe and adequately stocked."
-    ),
-)
 
+_model = get_model()
+assessment_agent = (
+    Agent(
+        model=_model,
+        tools=[lookup_shelf_life],
+        structured_output_model=Assessment,
+        system_prompt=(
+            "You assess community fridge check-ins. Use lookup_shelf_life when an item or freshness "
+            "claim needs verification. Return risk for unsafe or likely spoiled food, critically_empty "
+            "for an empty or nearly empty fridge, and all_fine when food is safe and adequately stocked."
+        ),
+    )
+    if _model
+    else None
+)
 
 
 def fallback_assessment(state: Dict[str, Any]) -> Dict[str, Any]:
@@ -71,9 +76,12 @@ class SentinelGraph:
         return state
 
 
+sentinel_graph = SentinelGraph()
+
+
 def assess_node(state: Dict[str, Any], invocation_state: Dict[str, Any]) -> Dict[str, Any]:
     """Uses Strands reasoning and a shelf-life tool to classify the check-in."""
-    extracted = state["extracted_data"]
+    extracted = state.get("extracted_data", {})
     fill_pct = extracted.get("fill_level_pct")
     empty_threshold = 20
     if fill_pct is not None and fill_pct < empty_threshold:
@@ -97,10 +105,8 @@ def assess_node(state: Dict[str, Any], invocation_state: Dict[str, Any]) -> Dict
         state["status"] = assessment.status
         state["assessment_reasoning"] = assessment.reasoning
         return state
-    except Exception as e:
-        print(f"REAL ERROR: {type(e).__name__}: {e}")
+    except Exception:
         return fallback_assessment(state)
-
 
 
 def alert_pull_node(state: Dict[str, Any], invocation_state: Dict[str, Any]) -> Dict[str, Any]:
@@ -110,28 +116,25 @@ def alert_pull_node(state: Dict[str, Any], invocation_state: Dict[str, Any]) -> 
     if notifier is not None and sender:
         result = notifier.send_sms_safe(
             to_number=sender,
-            message_body="Sentinel flagged a potentially unsafe item. Please remove it from the fridge.",
+            message_body="Sentinel Alert: A reported item may be spoiled or unsafe. Please review the shelf and pull it if necessary.",
         )
-        state["sms_sid"] = result.get("sid")
-        state["action_taken"] = "SMS sent to volunteer to pull item." if result["status"] == "success" else "Volunteer SMS failed to send."
-    else:
-        state["action_taken"] = "Volunteer notification could not be sent."
+        if result.get("status") != "success":
+            print(f"[Notifier Warning] Failed to send SMS to {sender}: {result.get('error')}")
+    state["action_taken"] = "Flagged item for review or removal and notified the reporter if a phone number was present."
     return state
 
 
 def log_ok_node(state: Dict[str, Any], invocation_state: Dict[str, Any]) -> Dict[str, Any]:
-    """Silent resolution path."""
-    state["action_taken"] = "Logged silently. No contact made."
+    """Handles nominal fridge status."""
+    state["action_taken"] = "Logged nominal check-in without notifications."
     return state
 
 
 def route_next(state: Dict[str, Any]) -> str:
-    """Routes based on the assessment produced by the agent."""
-    return {
-        "risk": "alert_pull",
-        "critically_empty": "alert_empty",
-        "all_fine": "log_ok",
-    }[state["status"]]
-
-
-sentinel_graph = SentinelGraph()
+    """Branches the workflow to the correct terminal action."""
+    status = state.get("status")
+    if status == "critically_empty":
+        return "alert_empty"
+    if status == "risk":
+        return "alert_pull"
+    return "log_ok"

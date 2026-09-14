@@ -9,16 +9,18 @@ class SMSNotifier:
         self.client = Client(account_sid, auth_token)
         self.from_number = from_number
 
-    def send_sms_safe(self, to_number: str, message_body: str) -> dict:
+    def send_sms_safe(self, to_number: str | None = None, message_body: str | None = None, **kwargs) -> dict:
         """
         Sends an SMS with full exception handling.
         Returns a status dictionary instead of throwing unhandled errors.
         """
+        target = to_number or kwargs.get("to") or ""
+        text = message_body or kwargs.get("body") or ""
         try:
             message = self.client.messages.create(
-                body=message_body,
+                body=text,
                 from_=self.from_number,
-                to=to_number
+                to=target
             )
             logging.info(f"SMS sent successfully. SID: {message.sid}")
             return {"status": "success", "sid": message.sid}
