@@ -1,0 +1,188 @@
+[
+  {
+    "name": "risk_expired_lettuce",
+    "expected_state": "risk",
+    "intake_output": {
+      "items": [
+        {"category": "leafy_greens", "days_since_checkin": 6},
+        {"category": "milk", "days_since_checkin": 2}
+      ],
+      "fill_level_pct": 60,
+      "freshness_signals": "lettuce looks wilted and slimy"
+    }
+  },
+  {
+    "name": "risk_overrides_full_shelf",
+    "expected_state": "risk",
+    "intake_output": {
+      "items": [
+        {"category": "raw_poultry", "days_since_checkin": 3},
+        {"category": "bread", "days_since_checkin": 1},
+        {"category": "canned_goods", "days_since_checkin": 10}
+      ],
+      "fill_level_pct": 90,
+      "freshness_signals": "chicken smells off, everything else fine"
+    }
+  },
+  {
+    "name": "critically_empty_clean",
+    "expected_state": "critically_empty",
+    "intake_output": {
+      "items": [
+        {"category": "canned_goods", "days_since_checkin": 5}
+      ],
+      "fill_level_pct": 10,
+      "freshness_signals": "shelf almost bare"
+    }
+  },
+  {
+    "name": "all_fine_silent",
+    "expected_state": "all_fine",
+    "intake_output": {
+      "items": [
+        {"category": "milk", "days_since_checkin": 2},
+        {"category": "yogurt", "days_since_checkin": 5},
+        {"category": "root_vegetables", "days_since_checkin": 4}
+      ],
+      "fill_level_pct": 65,
+      "freshness_signals": "everything looks normal"
+    }
+  },
+  {
+    "name": "ambiguous_borderline_expiry",
+    "expected_state": "risk",
+    "intake_output": {
+      "items": [
+        {"category": "berries", "days_since_checkin": 4}
+      ],
+      "fill_level_pct": 55,
+      "freshness_signals": "berries look okay but a couple are soft"
+    }
+  },
+  {
+    "name": "ambiguous_unrecognized_category",
+    "expected_state": "risk",
+    "intake_output": {
+      "items": [
+        {"category": "mystery_leftovers", "days_since_checkin": 4}
+      ],
+      "fill_level_pct": 50,
+      "freshness_signals": "unlabeled container, unclear contents"
+    }
+  },
+  {
+    "name": "critically_empty_edge_at_threshold",
+    "expected_state": "critically_empty",
+    "intake_output": {
+      "items": [
+        {"category": "hard_cheese", "days_since_checkin": 3}
+      ],
+      "fill_level_pct": 19,
+      "freshness_signals": "very sparse"
+    }
+  },
+  {
+    "name": "all_fine_edge_just_above_threshold",
+    "expected_state": "all_fine",
+    "intake_output": {
+      "items": [
+        {"category": "eggs", "days_since_checkin": 5}
+      ],
+      "fill_level_pct": 20,
+      "freshness_signals": "moderate, a bit sparse but ok"
+    }
+  },
+  {
+  "name": "fine_fresh_produce_just_checked",
+  "expected_state": "all_fine",
+  "intake_output": {
+    "items": [
+      {"category": "leafy_greens", "days_since_checkin": 0},
+      {"category": "citrus", "days_since_checkin": 1}
+    ],
+    "fill_level_pct": 65,
+    "freshness_signals": "crisp, no discoloration"
+  }
+},
+{
+  "name": "fine_half_stocked_ordinary_day",
+  "expected_state": "all_fine",
+  "intake_output": {
+    "items": [
+      {"category": "milk", "days_since_checkin": 2},
+      {"category": "canned_goods", "days_since_checkin": 10}
+    ],
+    "fill_level_pct": 48,
+    "freshness_signals": "normal, nothing notable"
+  }
+},
+{
+  "name": "fine_bread_within_window",
+  "expected_state": "all_fine",
+  "intake_output": {
+    "items": [
+      {"category": "bread", "days_since_checkin": 2}
+    ],
+    "fill_level_pct": 55,
+    "freshness_signals": "soft, no mold"
+  }
+},
+{
+  "name": "fine_cooked_meal_same_day",
+  "expected_state": "all_fine",
+  "intake_output": {
+    "items": [
+      {"category": "cooked_grains_dish", "days_since_checkin": 0}
+    ],
+    "fill_level_pct": 40,
+    "freshness_signals": "still warm, just dropped off"
+  }
+},
+{
+  "name": "fine_mixed_shelf_stable_and_dairy",
+  "expected_state": "all_fine",
+  "intake_output": {
+    "items": [
+      {"category": "canned_goods", "days_since_checkin": 20},
+      {"category": "milk", "days_since_checkin": 1}
+    ],
+    "fill_level_pct": 72,
+    "freshness_signals": "sealed cans, milk unopened"
+  }
+},
+{
+  "name": "fine_root_vegetables_stable",
+  "expected_state": "all_fine",
+  "intake_output": {
+    "items": [
+      {"category": "root_vegetables", "days_since_checkin": 5}
+    ],
+    "fill_level_pct": 60,
+    "freshness_signals": "firm, no sprouting"
+  }
+},
+{
+  "name": "fine_well_stocked_no_flags",
+  "expected_state": "all_fine",
+  "intake_output": {
+    "items": [
+      {"category": "apples", "days_since_checkin": 1},
+      {"category": "bread", "days_since_checkin": 1},
+      {"category": "canned_goods", "days_since_checkin": 15}
+    ],
+    "fill_level_pct": 80,
+    "freshness_signals": "all normal, well organized"
+  }
+},
+{
+  "name": "fine_hard_cheese_early_in_window",
+  "expected_state": "all_fine",
+  "intake_output": {
+    "items": [
+      {"category": "hard_cheese", "days_since_checkin": 1}
+    ],
+    "fill_level_pct": 58,
+    "freshness_signals": "sealed, unopened"
+  }
+}
+]

@@ -1,0 +1,78 @@
+[
+  {
+    "name": "exact_day_expiry_boundary",
+    "why_ambiguous": "days_since_checkin exactly equals fridge_shelf_life_days -- is 'day 5 of a 5-day shelf life' expired or the last safe day?",
+    "intake_output": {
+      "items": [{"category": "leafy_greens", "days_since_checkin": 5}],
+      "fill_level_pct": 50,
+      "freshness_signals": "looks okay, no obvious wilting"
+    }
+  },
+  {
+    "name": "conflicting_old_but_smells_fine",
+    "why_ambiguous": "item is well past shelf life by day count, but the volunteer's text signal says it smells fine -- should the signal or the date win?",
+    "intake_output": {
+      "items": [{"category": "milk", "days_since_checkin": 12}],
+      "fill_level_pct": 60,
+      "freshness_signals": "smells completely normal, no sourness"
+    }
+  },
+  {
+    "name": "conflicting_fresh_date_but_bad_signal",
+    "why_ambiguous": "item is well within shelf life by day count, but the signal describes a spoilage indicator -- trust the signal or the date?",
+    "intake_output": {
+      "items": [{"category": "berries", "days_since_checkin": 1}],
+      "fill_level_pct": 45,
+      "freshness_signals": "a couple berries have visible mold despite being fresh"
+    }
+  },
+  {
+    "name": "unidentified_mixed_container",
+    "why_ambiguous": "volunteer couldn't identify the item category at all -- tests the unidentified/unmatched fallback path under realistic uncertainty",
+    "intake_output": {
+      "items": [{"category": "unidentified", "days_since_checkin": 4}],
+      "fill_level_pct": 55,
+      "freshness_signals": "unlabeled container, can't tell what's inside or how old"
+    }
+  },
+  {
+    "name": "multiple_items_all_slightly_borderline",
+    "why_ambiguous": "no single item clearly triggers risk, but several are each within a day or two of expiry -- does the system correctly avoid over-flagging while still catching the closest one if it crosses the line?",
+    "intake_output": {
+      "items": [
+        {"category": "yogurt", "days_since_checkin": 13},
+        {"category": "citrus", "days_since_checkin": 13},
+        {"category": "bread", "days_since_checkin": 6}
+      ],
+      "fill_level_pct": 50,
+      "freshness_signals": "everything seems mostly fine, nothing obviously bad"
+    }
+  },
+  {
+    "name": "fill_level_exactly_at_threshold_plus_borderline_item",
+    "why_ambiguous": "fill level sits exactly at the 20% cutoff AND there's a borderline-age item -- tests whether risk still correctly takes priority at the boundary",
+    "intake_output": {
+      "items": [{"category": "hard_cheese", "days_since_checkin": 29}],
+      "fill_level_pct": 20,
+      "freshness_signals": "shelf is quite empty, cheese has a slightly stronger smell than usual"
+    }
+  },
+  {
+    "name": "vague_uncertain_signal",
+    "why_ambiguous": "volunteer's text is genuinely non-committal -- tests whether the model defaults to caution or to dismissal on real-world hedge language",
+    "intake_output": {
+      "items": [{"category": "cooked_grains_dish", "days_since_checkin": 3}],
+      "fill_level_pct": 40,
+      "freshness_signals": "not totally sure, might be a little off, hard to tell"
+    }
+  },
+  {
+    "name": "photo_quality_caveat_in_signal",
+    "why_ambiguous": "signal explicitly flags a photo-quality limitation rather than describing the item itself -- a realistic case once real photos are involved, not just text",
+    "intake_output": {
+      "items": [{"category": "raw_poultry", "days_since_checkin": 1}],
+      "fill_level_pct": 65,
+      "freshness_signals": "photo is dark/blurry, can't clearly see the packaging or color"
+    }
+  }
+]

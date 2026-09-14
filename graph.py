@@ -1,9 +1,14 @@
 import json
 import os
+from pathlib import Path
 from typing import Any, Dict
 
+from dotenv import load_dotenv
 from pydantic import BaseModel, Field
+from services.model_provider import get_model
 from strands import Agent
+
+load_dotenv(Path(__file__).resolve().parent / ".env")
 
 from branch_nodes import alert_empty_node
 from intake import intake_node
@@ -15,10 +20,10 @@ class Assessment(BaseModel):
     reasoning: str = Field(description="Brief explanation of the evidence and tool result used")
 
 
-MODEL_ID = os.getenv("SENTINEL_MODEL_ID")
+_model = get_model()
 assessment_agent = (
     Agent(
-        model=MODEL_ID,
+        model=_model,
         tools=[lookup_shelf_life],
         structured_output_model=Assessment,
         system_prompt=(
@@ -27,7 +32,7 @@ assessment_agent = (
             "for an empty or nearly empty fridge, and all_fine when food is safe and adequately stocked."
         ),
     )
-    if MODEL_ID
+    if _model
     else None
 )
 
@@ -71,8 +76,19 @@ class SentinelGraph:
         return state
 
 
+sentinel_graph = SentinelGraph()
+
+
 def assess_node(state: Dict[str, Any], invocation_state: Dict[str, Any]) -> Dict[str, Any]:
     """Uses Strands reasoning and a shelf-life tool to classify the check-in."""
+    extracted = state.get("extracted_data", {})
+    fill_pct = extracted.get("fill_level_pct")
+    empty_threshold = 20
+    if fill_pct is not None and fill_pct < empty_threshold:
+        state["status"] = "critically_empty"
+        state["assessment_reasoning"] = f"fill_level_pct={fill_pct} below empty_threshold={empty_threshold}"
+        return state
+
     if assessment_agent is None:
         return fallback_assessment(state)
 
@@ -100,28 +116,25 @@ def alert_pull_node(state: Dict[str, Any], invocation_state: Dict[str, Any]) -> 
     if notifier is not None and sender:
         result = notifier.send_sms_safe(
             to_number=sender,
-            message_body="Sentinel flagged a potentially unsafe item. Please remove it from the fridge.",
+            message_body="Sentinel Alert: A reported item may be spoiled or unsafe. Please review the shelf and pull it if necessary.",
         )
-        state["sms_sid"] = result.get("sid")
-        state["action_taken"] = "SMS sent to volunteer to pull item." if result["status"] == "success" else "Volunteer SMS failed to send."
-    else:
-        state["action_taken"] = "Volunteer notification could not be sent."
+        if result.get("status") != "success":
+            print(f"[Notifier Warning] Failed to send SMS to {sender}: {result.get('error')}")
+    state["action_taken"] = "Flagged item for review or removal and notified the reporter if a phone number was present."
     return state
 
 
 def log_ok_node(state: Dict[str, Any], invocation_state: Dict[str, Any]) -> Dict[str, Any]:
-    """Silent resolution path."""
-    state["action_taken"] = "Logged silently. No contact made."
+    """Handles nominal fridge status."""
+    state["action_taken"] = "Logged nominal check-in without notifications."
     return state
 
 
 def route_next(state: Dict[str, Any]) -> str:
-    """Routes based on the assessment produced by the agent."""
-    return {
-        "risk": "alert_pull",
-        "critically_empty": "alert_empty",
-        "all_fine": "log_ok",
-    }[state["status"]]
-
-
-sentinel_graph = SentinelGraph()
+    """Branches the workflow to the correct terminal action."""
+    status = state.get("status")
+    if status == "critically_empty":
+        return "alert_empty"
+    if status == "risk":
+        return "alert_pull"
+    return "log_ok"

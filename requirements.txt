@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pydantic
+twilio
+python-dotenv
+strands-agents
+anthropic
+boto3
+dotenv
+openai

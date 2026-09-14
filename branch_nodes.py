@@ -13,12 +13,17 @@ def haversine(lat1, lon1, lat2, lon2):
 def alert_empty_node(state: Dict[str, Any], invocation_state: Dict[str, Any]) -> Dict[str, Any]:
     """Selects nearest donor securely using invocation_state."""
     # Secure parameters extracted from invocation_state
-    roster = invocation_state.get("donor_roster", [])
+    roster = invocation_state.get("donor_roster")
+    if not roster:
+        try:
+            from intake import load_donor_roster
+            roster = load_donor_roster()
+        except Exception:
+            roster = []
+
     notifier = invocation_state.get("notifier")
     fridge_location = invocation_state.get("fridge_location", {"lat": 6.5244, "lon": 3.3792})
-    
-    if not isinstance(notifier, SMSNotifier):
-        raise ValueError("An SMS notifier is required to send an empty-fridge alert.")
+
     if not roster:
         state["action_taken"] = "No donor is available for an empty-fridge alert."
         return state
@@ -28,13 +33,17 @@ def alert_empty_node(state: Dict[str, Any], invocation_state: Dict[str, Any]) ->
         roster,
         key=lambda d: haversine(fridge_location["lat"], fridge_location["lon"], d["lat"], d["lon"])
     )
-    
+    state["notified_donor"] = nearest_donor["name"]
+
+    if not isinstance(notifier, SMSNotifier):
+        state["action_taken"] = f"Identified nearest donor {nearest_donor['name']} (SMS simulated - no notifier configured)."
+        return state
+
     result = notifier.send_sms_safe(
         to_number=nearest_donor["phone"],
         message_body=f"Hi {nearest_donor['name']}, the community fridge is empty! Could you help restock?",
     )
 
-    state["notified_donor"] = nearest_donor["name"]
     state["sms_sid"] = result.get("sid")
     state["action_taken"] = "SMS sent to nearest donor." if result["status"] == "success" else "Donor SMS failed to send."
     return state
